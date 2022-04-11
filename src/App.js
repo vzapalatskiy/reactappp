@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ProductCreate from './components/ProductCreate';
 import ProductList from "./components/ProductList";
 import ProductSelect from './components/ProductSelect';
@@ -15,9 +15,13 @@ function App() {
   ]);
 
   const [sortValue, setSortValue] = useState('');
+  const [search, setSearch] = useState('');
 
-
-
+  console.log(search);
+  //поиск
+  const searchProduct = useMemo(() => {
+    return products.filter(products => products.title.toLowerCase().includes(search.toLowerCase()))
+  }, [search, products])
 
   const sortProducts = (sortValue) => {
     //console.log(e);
@@ -37,7 +41,7 @@ function App() {
 
   //удаляем товар
   const removeProduct = (id) => {
-    setProducts(products.filter(p => p.id != id))
+    setProducts(products.filter(p => p.id !== id))
 
   }
 
@@ -50,10 +54,18 @@ function App() {
     <div className="App">
 
       <ProductCreate createProduct={createProduct} products={products} />
+      <input
+        className='myInput'
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        type='text'
+        placeholder='Введите поиск.....'
+      />
+
       <ProductSelect
         value={sortValue}
         onChange={sortProducts} />
-      <ProductList removeProduct={removeProduct} products={products} />
+      <ProductList removeProduct={removeProduct} products={searchProduct} />
 
 
 
